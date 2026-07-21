@@ -49,6 +49,16 @@ print("Contador de Producao Inicializado")
 # Loop Principal
 while True:
 
+    # Tratamento da Flag do Botão
+    if button_flag:
+        irq_state = machine.disable_irq()
+        part_counter = 0
+        button_flag = False
+        stop_flag = False
+        button_flag = False
+        print("Turno resetado com sucesso. Contadores zerados.")
+        machine.enable_irq(irq_state)
+
     # Lógica de Detecção de Objetos
     ldr_value = ldr_analog.read() # Leitura do valor analógico do LDR
 
@@ -67,12 +77,4 @@ while True:
         stop_flag = False
         print("Alerta: Micro-parada detectada!")
 
-    # Tratamento da Flag do Botão
-    if button_flag:
-        irq_state = machine.disable_irq()
-        part_counter = 0
-        button_flag = False
-        print("Turno resetado com sucesso. Contadores zerados.")
-        machine.enable_irq(irq_state)
-        
     time.sleep_ms(10) # Pequeno atraso para evitar travamentos no simulador

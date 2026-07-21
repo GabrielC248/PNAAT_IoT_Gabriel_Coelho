@@ -41,7 +41,7 @@ ldr_analog = machine.ADC(machine.Pin(LDR_ANALOG_PIN))
 ldr_analog.atten(machine.ADC.ATTN_11DB)
 
 # Configuração da Interrupção do botão
-reset_btn.irq(trigger=machine.Pin.IRQ_FALLING, handler=button_isr_handler) # pull-up externo -> borda de descida
+reset_btn.irq(trigger=machine.Pin.IRQ_FALLING, handler=button_isr_handler) # pull-up externo -> borda de descida (IRQ_FALLING)
 
 # Inicialização
 print("Contador de Producao Inicializado")

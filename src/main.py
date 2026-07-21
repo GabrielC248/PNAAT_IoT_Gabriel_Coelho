@@ -34,6 +34,9 @@ def button_isr_handler(pin):
         button_flag = True
         last_time = current_time
 
+# Inicialização
+print('Contador de Producao Inicializado')
+
 # Configuração dos Pinos
 reset_btn = machine.Pin(BUTTON_PIN, machine.Pin.IN)
 ldr_digital = machine.Pin(LDR_DIGITAL_PIN, machine.Pin.IN)
@@ -42,9 +45,6 @@ ldr_analog.atten(machine.ADC.ATTN_11DB)
 
 # Configuração da Interrupção do botão
 reset_btn.irq(trigger=machine.Pin.IRQ_FALLING, handler=button_isr_handler) # pull-up externo -> borda de descida (IRQ_FALLING)
-
-# Inicialização
-print("Contador de Producao Inicializado")
 
 # Loop Principal
 while True:
@@ -56,7 +56,7 @@ while True:
         button_flag = False
         stop_flag = False
         button_flag = False
-        print("Turno resetado com sucesso. Contadores zerados.")
+        print('Turno resetado com sucesso. Contadores zerados.')
         machine.enable_irq(irq_state) # Habilita as interrupções novamente
 
     # Lógica de Detecção de Objetos
@@ -75,6 +75,6 @@ while True:
 
     if stop_flag and time.ticks_diff(time.ticks_ms(), stop_time) > STOP_MS: # Se tem uma peça bloqueando o sensor por mais tempo que o permitido
         stop_flag = False
-        print("Alerta: Micro-parada detectada!")
+        print('Alerta: Micro-parada detectada!')
 
     #time.sleep_ms(10) # Pequeno atraso para evitar travamentos no simulador

@@ -18,7 +18,7 @@ ADC_THRESHOLD = int((LDR_RESISTANCE / (LDR_RESISTANCE + 10000.0)) * 4095) # Limi
 # Variáveis para o Tratamento do Botão
 button_flag = False
 current_time = 0
-last_time = 0
+last_time = -DEBOUNCE_MS
 
 # Variáveis do Sistema
 part_counter = 0
@@ -49,7 +49,7 @@ print('Contador de Producao Inicializado')
 # Loop Principal
 while True:
 
-    time.sleep_ms(200) # Pequeno atraso para evitar travamentos no simulador
+    time.sleep_ms(100) # Pequeno atraso para evitar travamentos no simulador
 
     # Lógica de Detecção de Objetos
     ldr_value = ldr_analog.read() # Leitura do valor analógico do LDR

@@ -77,4 +77,4 @@ while True:
         stop_flag = False
         print("Alerta: Micro-parada detectada!")
 
-    time.sleep_ms(10) # Pequeno atraso para evitar travamentos no simulador
+    #time.sleep_ms(10) # Pequeno atraso para evitar travamentos no simulador

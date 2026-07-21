@@ -6,6 +6,10 @@ DEBOUNCE_MS = 300   # 300 milissegundos de debouncing
 STOP_MS = 3000      # 3 segundos para alertar a micro-parada
 LUX_THRESHOLD = 500 # Limiar de 500 lux para detecção do objeto
 
+# Constantes Calculadas (gamma = 0.7 | rl10 = 50k | ADC = 0-4095)
+LDR_RESISTANCE = 50000 * ((10.0 / LUX_THRESHOLD) ** 0.7)                  # Resistência variável do LDR
+ADC_THRESHOLD = int((LDR_RESISTANCE / (LDR_RESISTANCE + 10000.0)) * 4095) # Limiar do ADC com base no limiar de lux
+
 # Definição dos Pinos Utilizados
 BUTTON_PIN = 25
 LDR_DIGITAL_PIN = 26
@@ -18,6 +22,9 @@ last_time = 0
 
 # Variáveis do Sistema
 part_counter = 0
+part_detected = False
+stop_time = 0
+stop_flag = False
 
 # Definição da Rotina de Interrupção do Botão
 def button_isr_handler(pin):
@@ -42,6 +49,24 @@ print("Contador de Producao Inicializado")
 # Loop Principal
 while True:
 
+    # Lógica de Detecção de Objetos
+    ldr_value = ldr_analog.read() # Leitura do valor analógico do LDR
+
+    if ldr_value > ADC_THRESHOLD and not part_detected:
+        part_detected = True
+        stop_flag = True
+        stop_time = time.ticks_ms()
+
+    if ldr_value < ADC_THRESHOLD and part_detected:
+        part_counter = part_counter + 1
+        part_detected = False
+        stop_flag = False
+        print(f"Peca detectada! Total: {part_counter}")
+
+    if stop_flag and time.ticks_diff(time.ticks_ms(), stop_time) > STOP_MS:
+        stop_flag = False
+        print("Alerta: Micro-parada detectada!")
+
     # Tratamento da Flag do Botão
     if button_flag:
         irq_state = machine.disable_irq()
@@ -49,5 +74,5 @@ while True:
         button_flag = False
         print("Turno resetado com sucesso. Contadores zerados.")
         machine.enable_irq(irq_state)
-
+        
     time.sleep_ms(10) # Pequeno atraso para evitar travamentos no simulador

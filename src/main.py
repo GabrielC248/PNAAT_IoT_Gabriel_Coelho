@@ -8,7 +8,7 @@ LUX_THRESHOLD = 500 # Limiar de 500 lux para detecção do objeto
 
 # Constantes Calculadas (gamma = 0.7 | rl10 = 50k | ADC = 0-4095)
 LDR_RESISTANCE = 50000 * ((10.0 / LUX_THRESHOLD) ** 0.7)                  # Resistência variável do LDR
-ADC_THRESHOLD = int((LDR_RESISTANCE / (LDR_RESISTANCE + 10000.0)) * 4095) # Limiar do ADC com base no limiar de lux
+ADC_THRESHOLD = int((LDR_RESISTANCE / (LDR_RESISTANCE + 10000.0)) * 4095) # Limiar do ADC com base no limiar de lux definido
 
 # Definição dos Pinos Utilizados
 BUTTON_PIN = 25
@@ -30,7 +30,7 @@ stop_flag = False
 def button_isr_handler(pin):
     global button_flag, last_time, current_time
     current_time = time.ticks_ms()
-    if time.ticks_diff(current_time, last_time) > DEBOUNCE_MS:
+    if time.ticks_diff(current_time, last_time) > DEBOUNCE_MS: # Se passou tempo suficiente desde o último aperto, seta a flag (debouncing)
         button_flag = True
         last_time = current_time
 
@@ -41,7 +41,7 @@ ldr_analog = machine.ADC(machine.Pin(LDR_ANALOG_PIN))
 ldr_analog.atten(machine.ADC.ATTN_11DB)
 
 # Configuração da Interrupção do botão
-reset_btn.irq(trigger=machine.Pin.IRQ_FALLING, handler=button_isr_handler)
+reset_btn.irq(trigger=machine.Pin.IRQ_FALLING, handler=button_isr_handler) # pull-up externo -> borda de descida
 
 # Inicialização
 print("Contador de Producao Inicializado")
@@ -51,29 +51,29 @@ while True:
 
     # Tratamento da Flag do Botão
     if button_flag:
-        irq_state = machine.disable_irq()
+        irq_state = machine.disable_irq() # Pausa as interrupções
         part_counter = 0
         button_flag = False
         stop_flag = False
         button_flag = False
         print("Turno resetado com sucesso. Contadores zerados.")
-        machine.enable_irq(irq_state)
+        machine.enable_irq(irq_state) # Habilita as interrupções novamente
 
     # Lógica de Detecção de Objetos
     ldr_value = ldr_analog.read() # Leitura do valor analógico do LDR
 
-    if ldr_value > ADC_THRESHOLD and not part_detected:
+    if ldr_value > ADC_THRESHOLD and not part_detected: # Se escureceu (valor do ADC sobe) e não há nenhuma peça detectada
         part_detected = True
         stop_flag = True
-        stop_time = time.ticks_ms()
+        stop_time = time.ticks_ms() # Marca o momento que a peça entrou
 
-    if ldr_value < ADC_THRESHOLD and part_detected:
+    if ldr_value < ADC_THRESHOLD and part_detected: # Se clareou (valor do ADC cai) e tinha uma peça passando
         part_counter = part_counter + 1
         part_detected = False
         stop_flag = False
         print(f"Peca detectada! Total: {part_counter}")
 
-    if stop_flag and time.ticks_diff(time.ticks_ms(), stop_time) > STOP_MS:
+    if stop_flag and time.ticks_diff(time.ticks_ms(), stop_time) > STOP_MS: # Se tem uma peça bloqueando o sensor por mais tempo que o permitido
         stop_flag = False
         print("Alerta: Micro-parada detectada!")
 

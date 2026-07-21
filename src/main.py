@@ -41,7 +41,7 @@ ldr_analog = machine.ADC(machine.Pin(LDR_ANALOG_PIN))
 ldr_analog.atten(machine.ADC.ATTN_11DB)
 
 # Configuração da Interrupção do botão
-reset_btn.irq(trigger=machine.Pin.IRQ_RISING, handler=button_isr_handler) # Como é um botão com pull-up ideal é que fosse IRQ_FALLING, para que ao apertar o botão a interrupção fosse gerada. Para cumprir com os testes, foi alterada para RISING_EDGE, ou seja, só vai acontecer a interrupção quando soltar o botão.
+reset_btn.irq(trigger=machine.Pin.IRQ_FALLING, handler=button_isr_handler) # botão com pull-up externo -> borda de descida (IRQ_FALLING)
 
 # Inicialização
 print('Contador de Producao Inicializado')
@@ -49,7 +49,7 @@ print('Contador de Producao Inicializado')
 # Loop Principal
 while True:
 
-    time.sleep_ms(100) # Pequeno atraso para evitar travamentos no simulador
+    time.sleep_ms(250) # Pequeno atraso para evitar travamentos no simulador
 
     # Lógica de Detecção de Objetos
     ldr_value = ldr_analog.read() # Leitura do valor analógico do LDR

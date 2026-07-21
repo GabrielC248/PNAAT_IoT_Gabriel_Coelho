@@ -2,8 +2,8 @@ import machine
 import time
 
 # Constantes do Sistema
-DEBOUNCE_MS = 500   # 300 milissegundos de debouncing
-STOP_MS = 5000      # 3 segundos para alertar a micro-parada
+DEBOUNCE_MS = 500   # 500 milissegundos de debouncing
+STOP_MS = 5000      # 5 segundos para alertar a micro-parada
 LUX_THRESHOLD = 500 # Limiar de 500 lux para detecção do objeto
 
 # Constantes Calculadas (gamma = 0.7 | rl10 = 50k | ADC = 0-4095)

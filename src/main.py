@@ -49,7 +49,7 @@ print('Contador de Producao Inicializado')
 # Loop Principal
 while True:
 
-    time.sleep_ms(10) # Pequeno atraso para evitar travamentos no simulador
+    time.sleep_ms(100) # Pequeno atraso para evitar travamentos no simulador
 
     # Tratamento da Flag do Botão
     if button_flag:

@@ -112,14 +112,17 @@ Essa abordagem reduz o tempo gasto dentro da rotina de interrupção, mantendo a
 | Componente | Função |
 |------------|--------|
 | ESP32 DevKit C v4 | Microcontrolador responsável pela execução do firmware. |
-| LDR | Sensor óptico utilizado para detectar a passagem das peças através da variação da luminosidade. A saída digital foi conectada no pino 26 e a saída analógica no pino 27.|
-| Conversor ADC do ESP32 | Responsável pela conversão da leitura analógica do LDR para valores digitais. |
+| Sensor LDR | Sensor óptico utilizado para detectar a passagem das peças através da variação da luminosidade. A saída digital foi conectada no pino 26 e a saída analógica no pino 27.|
 | Botão de Reset | Permite reiniciar o contador de produção e limpar o estado do sistema. A saída foi conectada no pino 25.|
-| Interface Serial (UART) | Utilizada para envio das mensagens de status durante a execução da aplicação. |
+| Resistor de pull-up | Resistor de 10k responsável por manter a linha em nível lógico '1' enquanto o botão estiver solto.|
 
 ---
 
 ## Decisões Técnicas Relevantes
+
+### Resistor de pull-up externo
+
+Embora o ESP32 permita a utilização do resistor de pull-up interno na entrada digital do botão, optou-se pela implementação de um resistor de pull-up externo de 10 kΩ. Essa escolha teve como objetivo aplicar, na prática, os conceitos de sinais e de entradas digitais estudados ao longo do curso, demonstrando o entendimento tanto da configuração por software quanto da implementação em hardware.
 
 ### Utilização da leitura analógica
 

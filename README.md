@@ -166,6 +166,10 @@ O acionamento do botão de reset reinicializa corretamente o contador e os estad
 
 Durante o desenvolvimento, uma das principais preocupações foi manter a implementação simples, organizada e compatível com o desenvolvimento para microcontroladores, que deve ser eficiente e enxuta.
 
+Na etapa de testes automatizados, o **cenário 3** apresentou desafios de validação. O problema não estava na lógica de interrupção do firmware, mas sim em uma condição de corrida do próprio ambiente de testes. O delay de 200 ms após o "pressionar do botão" causava uma dessincronização: a rotina de interrupção do botão era processada e a mensagem serial era enviada antes que o ambiente de teste estivesse pronto para interceptá-la, ou seja, o alerta de reset era enviado corretamente, mas a simulação estava no delay e não no wait-serial, resultando em erro de timeout.
+
+Para contornar essa limitação, foi necessário realizar um ajuste empírico no firmware, ajustando o delay para estabilidade da simulação no começo do loop principal para 250 ms. Essa adequação permitiu que na validação, o microcontrolador enviasse a mensagem na janela de tempo certa para o teste, resultando em sucesso no cenário 3.
+
 Como melhoria futura, seria possível expandir o sistema para registrar métricas adicionais de produção, como tempo médio entre peças, produtividade por turno, taxa de produção e armazenamento das informações em memória não volátil ou envio para um sistema supervisório utilizando protocolos de comunicação como o MQTT.
 
 O desenvolvimento deste projeto permitiu consolidar conceitos relacionados à programação de sistemas embarcados em microPython, tratamento de interrupções, leitura de sensores analógicos, debounce por software, temporização não bloqueante e desenvolvimento de firmware para aplicações de monitoramento industrial.
